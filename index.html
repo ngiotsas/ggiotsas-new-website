@@ -678,15 +678,19 @@
             border-radius: 2px;
             outline: none;
             cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
             appearance: none;
             width: 16px;
             height: 16px;
             background: white;
             border-radius: 50%;
             cursor: pointer;
+            border: none;
         }
 
         .volume-slider::-moz-range-thumb {
@@ -696,6 +700,13 @@
             border-radius: 50%;
             cursor: pointer;
             border: none;
+            -moz-appearance: none;
+        }
+
+        .volume-slider::-moz-range-track {
+            background: rgba(255, 255, 255, 0.3);
+            height: 4px;
+            border-radius: 2px;
         }
 
         .video-placeholder {
@@ -949,7 +960,7 @@
                     </button>
                     <div class="volume-control">
                         <span style="color: white;">🔊</span>
-                        <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="50" onchange="changeVolume(this.value)">
+                        <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="50" oninput="changeVolume(this.value)">
                     </div>
                     <button class="control-btn" id="fullscreen-btn" onclick="toggleFullscreen()">
                         ⛶
@@ -978,7 +989,7 @@
                     </button>
                     <div class="volume-control">
                         <span style="color: white;">🔊</span>
-                        <input type="range" class="volume-slider" id="tedx-volume-slider" min="0" max="100" value="50" onchange="changeTEDxVolume(this.value)">
+                        <input type="range" class="volume-slider" id="tedx-volume-slider" min="0" max="100" value="50" oninput="changeTEDxVolume(this.value)">
                     </div>
                     <button class="control-btn" id="tedx-fullscreen-btn" onclick="toggleTEDxFullscreen()">
                         ⛶
@@ -1258,12 +1269,30 @@
         
         function changeVolume(value) {
             if (!youtubePlayer) return;
-            youtubePlayer.setVolume(value);
+            try {
+                youtubePlayer.setVolume(parseInt(value));
+                if (parseInt(value) === 0) {
+                    youtubePlayer.mute();
+                } else {
+                    youtubePlayer.unMute();
+                }
+            } catch (error) {
+                console.error('Error changing volume:', error);
+            }
         }
 
         function changeTEDxVolume(value) {
             if (!tedxPlayer) return;
-            tedxPlayer.setVolume(value);
+            try {
+                tedxPlayer.setVolume(parseInt(value));
+                if (parseInt(value) === 0) {
+                    tedxPlayer.mute();
+                } else {
+                    tedxPlayer.unMute();
+                }
+            } catch (error) {
+                console.error('Error changing TEDx volume:', error);
+            }
         }
 
         function toggleFullscreen() {
